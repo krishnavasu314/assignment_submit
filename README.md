@@ -71,9 +71,5 @@ The UI runs on `http://localhost:5173` and calls the FastAPI server at `http://l
 - `PUT /interactions/{id}` – edit interaction
 - `POST /agent/chat` – LangGraph agent chat interface
 
-## Demo Tips
-- Seed HCPs via the **Seed sample HCPs** button.
-- Use the structured form to log a detailed visit.
-- In chat, try: “Log a follow-up with Dr. Iyer about adverse event monitoring.”
 
 
