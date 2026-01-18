@@ -1,4 +1,4 @@
-# AI-First CRM HCP Module ñ Log Interaction Screen
+# AI-First CRM HCP Module ‚Äì Log Interaction Screen
 
 This repository contains a minimal full-stack prototype for the **Log Interaction Screen** of an AI-first CRM designed for life sciences field reps. Users can log HCP interactions via a structured form or a conversational assistant powered by **LangGraph** and **Groq** LLMs (default: `gemma2-9b-it`).
 
@@ -22,7 +22,7 @@ The LangGraph agent serves as the reasoning layer that:
 - Summarizes raw notes and extracts entities to keep CRM fields structured.
 - Suggests next-best actions based on recent interactions.
 
-### Tools (Minimum 5)
+### Tools 
 1. **Log Interaction** (`log_interaction`)
    - Captures raw notes, invokes the LLM for summarization + entity extraction, and writes a structured interaction record.
 2. **Edit Interaction** (`edit_interaction`)
@@ -64,17 +64,16 @@ npm run dev
 The UI runs on `http://localhost:5173` and calls the FastAPI server at `http://localhost:8000`.
 
 ## API Endpoints
-- `GET /hcps` ñ list HCPs
-- `POST /hcps/seed` ñ seed sample HCPs
-- `GET /interactions?hcp_id=...` ñ list interactions
-- `POST /interactions` ñ create interaction (structured form)
-- `PUT /interactions/{id}` ñ edit interaction
-- `POST /agent/chat` ñ LangGraph agent chat interface
+- `GET /hcps` ‚Äì list HCPs
+- `POST /hcps/seed` ‚Äì seed sample HCPs
+- `GET /interactions?hcp_id=...` ‚Äì list interactions
+- `POST /interactions` ‚Äì create interaction (structured form)
+- `PUT /interactions/{id}` ‚Äì edit interaction
+- `POST /agent/chat` ‚Äì LangGraph agent chat interface
 
 ## Demo Tips
 - Seed HCPs via the **Seed sample HCPs** button.
 - Use the structured form to log a detailed visit.
-- In chat, try: ìLog a follow-up with Dr. Iyer about adverse event monitoring.î
+- In chat, try: ‚ÄúLog a follow-up with Dr. Iyer about adverse event monitoring.‚Äù
 
-## Notes
-- The video instructions link is not accessible from this environment; follow it separately when recording your walkthrough.
+
