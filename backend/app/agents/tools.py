@@ -38,17 +38,24 @@ def _parse_datetime(value: Optional[str]) -> Optional[datetime]:
         return None
 
 
-def build_tools(session: Session, llm):
+def build_tools(session: Session, llm, default_hcp_id: Optional[int] = None):
+    def _resolve_hcp_id(hcp_id: Optional[int]) -> Optional[int]:
+        return hcp_id if hcp_id is not None else default_hcp_id
+
     @tool("fetch_hcp_profile")
-    def fetch_hcp_profile(hcp_id: int) -> dict[str, Any]:
+    def fetch_hcp_profile(hcp_id: Optional[int] = None) -> dict[str, Any]:
         """Fetch HCP profile details with recent interactions."""
-        hcp = session.query(models.HCP).filter(models.HCP.id == hcp_id).first()
+        resolved_hcp_id = _resolve_hcp_id(hcp_id)
+        if resolved_hcp_id is None:
+            return {"error": "HCP id is required"}
+
+        hcp = session.query(models.HCP).filter(models.HCP.id == resolved_hcp_id).first()
         if not hcp:
             return {"error": "HCP not found"}
 
         interactions = (
             session.query(models.Interaction)
-            .filter(models.Interaction.hcp_id == hcp_id)
+            .filter(models.Interaction.hcp_id == resolved_hcp_id)
             .order_by(models.Interaction.interaction_date.desc().nullslast())
             .limit(3)
             .all()
@@ -77,7 +84,7 @@ def build_tools(session: Session, llm):
 
     @tool("log_interaction")
     def log_interaction(
-        hcp_id: int,
+        hcp_id: Optional[int] = None,
         raw_notes: str,
         interaction_type: Optional[str] = None,
         channel: Optional[str] = None,
@@ -90,6 +97,10 @@ def build_tools(session: Session, llm):
         summary: Optional[str] = None,
     ) -> dict[str, Any]:
         """Log an HCP interaction. If summary or entities are missing, auto-extract them."""
+        resolved_hcp_id = _resolve_hcp_id(hcp_id)
+        if resolved_hcp_id is None:
+            return {"error": "HCP id is required"}
+
         extracted_entities = None
         if raw_notes and (summary is None or products_discussed is None or sentiment is None):
             response = llm.invoke([SUMMARY_PROMPT, HumanMessage(content=raw_notes)])
@@ -102,7 +113,7 @@ def build_tools(session: Session, llm):
             attendees = attendees or extracted_entities.get("attendees")
 
         interaction = models.Interaction(
-            hcp_id=hcp_id,
+            hcp_id=resolved_hcp_id,
             interaction_type=interaction_type,
             channel=channel,
             interaction_date=_parse_datetime(interaction_date),
@@ -158,15 +169,19 @@ def build_tools(session: Session, llm):
         return {"interaction_id": interaction.id, "summary": interaction.summary}
 
     @tool("suggest_next_best_action")
-    def suggest_next_best_action(hcp_id: int) -> dict[str, Any]:
+    def suggest_next_best_action(hcp_id: Optional[int] = None) -> dict[str, Any]:
         """Provide a recommended next action for the rep."""
-        hcp = session.query(models.HCP).filter(models.HCP.id == hcp_id).first()
+        resolved_hcp_id = _resolve_hcp_id(hcp_id)
+        if resolved_hcp_id is None:
+            return {"error": "HCP id is required"}
+
+        hcp = session.query(models.HCP).filter(models.HCP.id == resolved_hcp_id).first()
         if not hcp:
             return {"error": "HCP not found"}
 
         last_interaction = (
             session.query(models.Interaction)
-            .filter(models.Interaction.hcp_id == hcp_id)
+            .filter(models.Interaction.hcp_id == resolved_hcp_id)
             .order_by(models.Interaction.interaction_date.desc().nullslast())
             .first()
         )

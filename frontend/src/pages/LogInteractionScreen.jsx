@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+ï»¿import { useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { fetchHcps, seedHcps } from '../features/hcpSlice'
@@ -138,7 +138,7 @@ export default function LogInteractionScreen() {
             <option value="">Choose an HCP</option>
             {hcps.map((hcp) => (
               <option key={hcp.id} value={hcp.id}>
-                {hcp.name} · {hcp.specialty || 'General'}
+                {hcp.name} - {hcp.specialty || 'General'}
               </option>
             ))}
           </select>
@@ -146,8 +146,8 @@ export default function LogInteractionScreen() {
         {selectedHcp ? (
           <div className="hcp-summary">
             <h3>{selectedHcp.name}</h3>
-            <p>{selectedHcp.specialty || 'Specialty'} · {selectedHcp.organization || 'Organization'}</p>
-            <p>{selectedHcp.city || 'City'}, {selectedHcp.state || 'State'} · Tier {selectedHcp.tier || 'N/A'}</p>
+            <p>{selectedHcp.specialty || 'Specialty'} - {selectedHcp.organization || 'Organization'}</p>
+            <p>{selectedHcp.city || 'City'}, {selectedHcp.state || 'State'} - Tier {selectedHcp.tier || 'N/A'}</p>
           </div>
         ) : (
           <div className="hcp-summary empty">Select an HCP to load details.</div>
@@ -263,7 +263,7 @@ export default function LogInteractionScreen() {
             <div className="chat-window">
               {chat.messages.length === 0 ? (
                 <div className="chat-empty">
-                  Start with: “Log a follow-up with Dr. Iyer about cardiac outcomes.”
+                  Start with: "Log a follow-up with Dr. Iyer about cardiac outcomes."
                 </div>
               ) : (
                 chat.messages.map((message, index) => (

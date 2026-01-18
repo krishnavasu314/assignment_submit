@@ -6,6 +6,7 @@ from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
 from sqlalchemy.orm import Session
 
 from app.agents.graph import build_agent
+from app.db import models
 from app.db.session import get_session
 from app.schemas import AgentChatRequest, AgentChatResponse, AgentMessage
 
@@ -37,7 +38,26 @@ def _serialize_message(message) -> AgentMessage:
 
 @router.post("/chat", response_model=AgentChatResponse)
 def chat(payload: AgentChatRequest, session: Session = Depends(get_session)):
-    agent = build_agent(session, model_override=payload.model)
+    hcp_context = None
+    if payload.hcp_id is not None:
+        hcp = session.query(models.HCP).filter(models.HCP.id == payload.hcp_id).first()
+        if hcp:
+            hcp_context = {
+                "id": hcp.id,
+                "name": hcp.name,
+                "specialty": hcp.specialty,
+                "organization": hcp.organization,
+                "city": hcp.city,
+                "state": hcp.state,
+                "tier": hcp.tier,
+            }
+
+    agent = build_agent(
+        session,
+        model_override=payload.model,
+        default_hcp_id=payload.hcp_id,
+        hcp_context=hcp_context,
+    )
     result = agent.invoke({"messages": [HumanMessage(content=payload.message)]})
     messages = result.get("messages", [])
     interaction_id = _extract_interaction_id(messages)
