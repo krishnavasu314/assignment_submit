@@ -49,6 +49,11 @@ GROQ_API_KEY=your_groq_api_key
 GROQ_MODEL=gemma2-9b-it
 ```
 
+MySQL example:
+```bash
+DATABASE_URL=mysql+pymysql://user:password@localhost:3306/hcp_crm
+```
+
 Run the API:
 ```bash
 uvicorn app.main:app --reload

@@ -3,8 +3,8 @@ uvicorn[standard]==0.30.6
 pydantic==2.8.2
 pydantic-settings==2.4.0
 sqlalchemy==2.0.34
-psycopg2-binary==2.9.9
-mysqlclient==2.2.4
+psycopg2-binary==2.9.10
+PyMySQL==1.1.1
 python-dotenv==1.0.1
 langgraph==0.2.34
 langchain-core==0.3.15

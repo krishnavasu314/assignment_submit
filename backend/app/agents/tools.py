@@ -84,8 +84,8 @@ def build_tools(session: Session, llm, default_hcp_id: Optional[int] = None):
 
     @tool("log_interaction")
     def log_interaction(
-        hcp_id: Optional[int] = None,
         raw_notes: str,
+        hcp_id: Optional[int] = None,
         interaction_type: Optional[str] = None,
         channel: Optional[str] = None,
         interaction_date: Optional[str] = None,
